@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Leafline Library Management dashboard">
+  <title>Leafline — Library Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="#" aria-label="Leafline home">
+      <span class="brand-mark">L</span>
+      <span><strong>leafline</strong><small>LIBRARY SPACE</small></span>
+    </a>
+    <div class="nav-label">WORKSPACE</div>
+    <button class="nav-item active" data-view="dashboard"><span>▦</span> Overview</button>
+    <button class="nav-item" data-view="books"><span>▤</span> Book inventory <b id="navBookCount">0</b></button>
+    <button class="nav-item" data-view="loans"><span>↗</span> Issue & return</button>
+    <button class="nav-item" data-view="reports"><span>◷</span> Reports</button>
+    <div class="sidebar-bottom">
+      <div class="help-card"><div class="help-icon">✦</div><strong>Keep your library in order</strong><p>Manage books, track loans, and stay on top of due dates.</p><button id="quickAdd" class="help-button">＋ Add a book</button></div>
+      <div class="profile"><div class="avatar">LM</div><div><strong>Library Manager</strong><small>Administrator</small></div><span class="online-dot"></span></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="mobile-menu" id="mobileMenu" aria-label="Toggle menu">☰</button>
+      <div class="crumb">Workspace <span>/</span> <strong id="pageCrumb">Overview</strong></div>
+      <div class="top-actions"><span class="today" id="todayLabel"></span><button class="top-add" id="topAdd">＋ <span>Add book</span></button></div>
+    </header>
+
+    <section class="view active-view" id="dashboardView">
+      <div class="welcome-row"><div><div class="eyebrow">LIBRARY OVERVIEW</div><h1>Good day, Manager <span>✦</span></h1><p class="muted">Here’s what’s happening in your library today.</p></div><button class="outline-button" id="exportFromDash">⇩ Export inventory</button></div>
+      <div class="stats-grid">
+        <article class="stat-card"><div class="stat-top"><span>Total books</span><span class="stat-icon purple">▤</span></div><div class="stat-number" id="totalBooks">0</div><div class="stat-foot"><span class="dot purple-dot"></span> In your collection</div></article>
+        <article class="stat-card"><div class="stat-top"><span>Available now</span><span class="stat-icon green">✓</span></div><div class="stat-number" id="availableBooks">0</div><div class="stat-foot"><span class="dot green-dot"></span> Ready to issue</div></article>
+        <article class="stat-card"><div class="stat-top"><span>Currently issued</span><span class="stat-icon blue">↗</span></div><div class="stat-number" id="issuedBooks">0</div><div class="stat-foot"><span class="dot blue-dot"></span> With readers</div></article>
+        <article class="stat-card"><div class="stat-top"><span>Overdue</span><span class="stat-icon orange">!</span></div><div class="stat-number" id="overdueBooks">0</div><div class="stat-foot"><span class="dot orange-dot"></span> Need follow-up</div></article>
+      </div>
+
+      <div class="content-grid">
+        <section class="panel recent-panel">
+          <div class="panel-heading"><div><h2>Recently added books</h2><p class="muted">The latest additions to your collection</p></div><button class="text-button" data-goto="books">View inventory →</button></div>
+          <div class="table-wrap"><table><thead><tr><th>BOOK</th><th>CATEGORY</th><th>STATUS</th></tr></thead><tbody id="recentBooks"></tbody></table></div>
+          <div class="empty-state hidden" id="recentEmpty"><span>▤</span><strong>No books added yet</strong><p>Add your first book to start building your library.</p><button class="primary-button" id="emptyAdd">＋ Add first book</button></div>
+        </section>
+        <section class="panel category-panel"><div class="panel-heading"><div><h2>Collection mix</h2><p class="muted">Books by category</p></div><span class="mini-badge">OVERVIEW</span></div><div id="categoryChart" class="category-chart"></div><div class="category-foot"><span>Unique titles in collection</span><strong id="categoryTotal">0</strong></div></section>
+      </div>
+      <section class="panel due-panel"><div class="panel-heading"><div><h2>Due date watch</h2><p class="muted">Books that need your attention</p></div><button class="text-button" data-goto="loans">Manage loans →</button></div><div id="dueList" class="due-list"></div><div id="dueEmpty" class="empty-inline">All clear — no overdue books at the moment.</div></section>
+    </section>
+
+    <section class="view" id="booksView">
+      <div class="page-heading"><div><div class="eyebrow">YOUR COLLECTION</div><h1>Book inventory</h1><p class="muted">Add, edit, search, and organize your books.</p></div><button class="primary-button" id="inventoryAdd">＋ Add a book</button></div>
+      <div class="panel inventory-panel"><div class="inventory-tools"><label class="searchbox"><span>⌕</span><input id="bookSearch" type="search" placeholder="Search by title, author, or ISBN…"></label><select id="categoryFilter" aria-label="Filter by category"><option value="">All categories</option></select><select id="statusFilter" aria-label="Filter by status"><option value="">All statuses</option><option value="Available">Available</option><option value="Issued">Issued</option><option value="Overdue">Overdue</option></select><button class="outline-button" id="exportBooks">⇩ Export CSV</button></div><div class="table-wrap"><table><thead><tr><th>BOOK DETAILS</th><th>ISBN</th><th>CATEGORY</th><th>STATUS</th><th>ACTIONS</th></tr></thead><tbody id="inventoryRows"></tbody></table></div><div class="table-footer"><span id="inventoryCount">0 books</span><span>Changes are saved automatically on this device</span></div><div class="empty-state hidden" id="inventoryEmpty"><span>⌕</span><strong>No matching books</strong><p>Try another search or add a new book.</p></div></div>
+    </section>
+
+    <section class="view" id="loansView">
+      <div class="page-heading"><div><div class="eyebrow">CIRCULATION DESK</div><h1>Issue & return</h1><p class="muted">Keep track of who has each book and when it is due.</p></div><button class="primary-button" id="issueBookButton">↗ Issue a book</button></div>
+      <div class="stats-grid compact-stats"><article class="stat-card"><div class="stat-top"><span>Active loans</span><span class="stat-icon blue">↗</span></div><div class="stat-number" id="loanActive">0</div><div class="stat-foot">Books with readers</div></article><article class="stat-card"><div class="stat-top"><span>Due soon</span><span class="stat-icon orange">◷</span></div><div class="stat-number" id="loanDueSoon">0</div><div class="stat-foot">Due in the next 3 days</div></article><article class="stat-card"><div class="stat-top"><span>Returned</span><span class="stat-icon green">✓</span></div><div class="stat-number" id="loanReturned">0</div><div class="stat-foot">Recorded in this session history</div></article></div>
+      <div class="panel"><div class="panel-heading"><div><h2>Active book loans</h2><p class="muted">Return a book when it comes back to the library.</p></div><label class="searchbox loan-search"><span>⌕</span><input id="loanSearch" type="search" placeholder="Search reader or book…"></label></div><div class="table-wrap"><table><thead><tr><th>BOOK / READER</th><th>ISSUE DATE</th><th>DUE DATE</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody id="loanRows"></tbody></table></div><div class="empty-state hidden" id="loansEmpty"><span>✓</span><strong>No active loans found</strong><p>Issue an available book to a reader to see it here.</p></div></div>
+    </section>
+
+    <section class="view" id="reportsView">
+      <div class="page-heading"><div><div class="eyebrow">LIBRARY INSIGHTS</div><h1>Reports</h1><p class="muted">A quick summary of your collection and circulation.</p></div><button class="primary-button" id="exportReport">⇩ Export inventory CSV</button></div>
+      <div class="stats-grid"><article class="stat-card"><div class="stat-top"><span>Collection size</span><span class="stat-icon purple">▤</span></div><div class="stat-number" id="reportTotal">0</div><div class="stat-foot">Total tracked titles</div></article><article class="stat-card"><div class="stat-top"><span>Availability rate</span><span class="stat-icon green">✓</span></div><div class="stat-number" id="availabilityRate">0%</div><div class="stat-foot">Ready for readers</div></article><article class="stat-card"><div class="stat-top"><span>Overdue loans</span><span class="stat-icon orange">!</span></div><div class="stat-number" id="reportOverdue">0</div><div class="stat-foot">Require follow-up</div></article><article class="stat-card"><div class="stat-top"><span>Categories</span><span class="stat-icon blue">◫</span></div><div class="stat-number" id="reportCategories">0</div><div class="stat-foot">Different book categories</div></article></div>
+      <div class="content-grid"><section class="panel"><div class="panel-heading"><div><h2>Category breakdown</h2><p class="muted">Distribution of your books</p></div></div><div id="reportCategoryRows" class="report-categories"></div></section><section class="panel"><div class="panel-heading"><div><h2>Library activity</h2><p class="muted">Current circulation snapshot</p></div></div><div class="activity-list"><div><span class="activity-icon green">✓</span><span>Available books</span><strong id="activityAvailable">0</strong></div><div><span class="activity-icon blue">↗</span><span>Books currently issued</span><strong id="activityIssued">0</strong></div><div><span class="activity-icon orange">!</span><span>Overdue books</span><strong id="activityOverdue">0</strong></div><div><span class="activity-icon purple">▤</span><span>All book records</span><strong id="activityTotal">0</strong></div></div></section></div>
+    </section>
+    <footer class="footer">Leafline Library Management <span>•</span> A simple, student-friendly demo app</footer>
+  </main>
+
+  <div class="modal-backdrop hidden" id="bookModalBackdrop">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="bookModalTitle"><div class="modal-head"><div><div class="eyebrow">COLLECTION MANAGEMENT</div><h2 id="bookModalTitle">Add a book</h2><p class="muted">Enter a few details to save a book record.</p></div><button class="close-button" data-close="bookModalBackdrop" aria-label="Close">×</button></div>
+      <form id="bookForm"><input type="hidden" id="bookId"><div class="form-grid"><label class="field full">Book title *<input id="bookTitle" required maxlength="120" placeholder="e.g. Atomic Habits"></label><label class="field">Author *<input id="bookAuthor" required maxlength="100" placeholder="e.g. James Clear"></label><label class="field">Category *<select id="bookCategory" required><option value="">Choose category</option><option>Fiction</option><option>Non-fiction</option><option>Technology</option><option>Science</option><option>Business</option><option>Biography</option><option>Education</option><option>History</option><option>Self-help</option><option>Other</option></select></label><label class="field">ISBN (optional)<input id="bookIsbn" maxlength="30" placeholder="e.g. 9780735211292"></label><label class="field">Shelf / location<input id="bookShelf" maxlength="30" placeholder="e.g. A-03"></label></div><div class="modal-actions"><button type="button" class="outline-button" data-close="bookModalBackdrop">Cancel</button><button class="primary-button" type="submit">Save book</button></div></form>
+    </section>
+  </div>
+
+  <div class="modal-backdrop hidden" id="issueModalBackdrop">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="issueModalTitle"><div class="modal-head"><div><div class="eyebrow">CIRCULATION DESK</div><h2 id="issueModalTitle">Issue a book</h2><p class="muted">Record the reader and expected return date.</p></div><button class="close-button" data-close="issueModalBackdrop" aria-label="Close">×</button></div>
+      <form id="issueForm"><div class="form-grid"><label class="field full">Available book *<select id="issueBookSelect" required><option value="">Choose a book</option></select></label><label class="field full">Reader name *<input id="readerName" required maxlength="100" placeholder="Enter student / reader name"></label><label class="field full">Return due date *<input id="dueDate" type="date" required></label></div><div class="modal-actions"><button type="button" class="outline-button" data-close="issueModalBackdrop">Cancel</button><button class="primary-button" type="submit">Confirm issue</button></div></form>
+    </section>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="script.js"></script>
+</body>
+</html>
