@@ -16,7 +16,7 @@ test("HTML links to the stylesheet", () => {
     "utf8"
   );
 
-  assert.match(html, /href=["']\.\/?style\.css["']/);
+  assert.match(html, /href=["']style\.css["']/);
 });
 
 test("HTML loads the JavaScript file", () => {
@@ -25,7 +25,7 @@ test("HTML loads the JavaScript file", () => {
     "utf8"
   );
 
-  assert.match(html, /src=["']\.\/?script\.js["']/);
+  assert.match(html, /src=["']script\.js["']/);
 });
 
 test("JavaScript file exists and is not empty", () => {
