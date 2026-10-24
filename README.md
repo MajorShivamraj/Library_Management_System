@@ -30,3 +30,5 @@ That is all you need to run the local demo. For easier editing, open the folder 
 2. Add a simple automated test and a GitHub Actions workflow.
 3. Use GitHub Pages to publish the static website.
 4. Record a 1–2 minute demo with your own voice, showing the app and pipeline.
+
+CI/CD pipeline setup for Leafline Library Management System.
